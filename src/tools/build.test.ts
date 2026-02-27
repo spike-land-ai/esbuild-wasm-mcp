@@ -102,7 +102,7 @@ describe("esbuild_wasm_mcp tools", () => {
     const result = await handler!({ entryPoints: ["in.js"] }) as {
       content: { text: string }[];
     };
-    const parsed = JSON.parse(result.content[0].text);
+    const parsed = JSON.parse(result.content[0]!.text);
     expect(parsed.metafile).toBeDefined();
     expect(parsed.mangleCache).toBeDefined();
   });

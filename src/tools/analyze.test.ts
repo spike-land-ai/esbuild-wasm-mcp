@@ -48,8 +48,8 @@ describe("registerAnalyzeTool", () => {
     expect(mockEsbuild.analyzeMetafile).toHaveBeenCalledWith(metafileObj, {
       verbose: undefined,
     });
-    expect(result.content[0].type).toBe("text");
-    expect(result.content[0].text).toBe("bundle analysis text");
+    expect(result.content[0]!.type).toBe("text");
+    expect(result.content[0]!.text).toBe("bundle analysis text");
   });
 
   it("passes verbose flag to analyzeMetafile", async () => {
@@ -76,7 +76,7 @@ describe("registerAnalyzeTool", () => {
     };
 
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain("Invalid JSON in metafile");
+    expect(result.content[0]!.text).toContain("Invalid JSON in metafile");
   });
 
   it("returns error response when analyzeMetafile throws", async () => {

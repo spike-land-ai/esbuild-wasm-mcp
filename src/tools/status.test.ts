@@ -46,8 +46,8 @@ describe("registerStatusTool", () => {
 
     const result = await handler({}) as { content: { type: string; text: string }[] };
 
-    expect(result.content[0].type).toBe("text");
-    const parsed = JSON.parse(result.content[0].text);
+    expect(result.content[0]!.type).toBe("text");
+    const parsed = JSON.parse(result.content[0]!.text);
     expect(parsed.status).toBe("uninitialized");
     expect(parsed.version).toBeNull();
     expect(parsed.error).toBeNull();
@@ -65,7 +65,7 @@ describe("registerStatusTool", () => {
     });
 
     const result = await handler({}) as { content: { text: string }[] };
-    const parsed = JSON.parse(result.content[0].text);
+    const parsed = JSON.parse(result.content[0]!.text);
 
     expect(parsed.status).toBe("ready");
     expect(parsed.version).toBe("0.27.4");
@@ -84,7 +84,7 @@ describe("registerStatusTool", () => {
     });
 
     const result = await handler({}) as { content: { text: string }[] };
-    const parsed = JSON.parse(result.content[0].text);
+    const parsed = JSON.parse(result.content[0]!.text);
 
     expect(parsed.status).toBe("error");
     expect(parsed.error).toContain("Failed to fetch WASM");
@@ -101,7 +101,7 @@ describe("registerStatusTool", () => {
     });
 
     const result = await handler({}) as { content: { text: string }[] };
-    const parsed = JSON.parse(result.content[0].text);
+    const parsed = JSON.parse(result.content[0]!.text);
 
     expect(parsed.status).toBe("initializing");
   });
@@ -117,7 +117,7 @@ describe("registerStatusTool", () => {
     });
 
     const result = await handler({}) as { content: { text: string }[] };
-    expect(result.content[0].text).toContain("\n");
+    expect(result.content[0]!.text).toContain("\n");
   });
 
   it("calls getState on every invocation", async () => {
