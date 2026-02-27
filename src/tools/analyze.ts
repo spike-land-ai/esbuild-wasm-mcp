@@ -23,11 +23,14 @@ export function registerAnalyzeTool(server: McpServer): void {
     async args => {
       const esbuild = await getEsbuildWasm();
 
+      let metafile;
       try {
-        const metafile = typeof args.metafile === "string"
-          ? JSON.parse(args.metafile)
-          : args.metafile;
+        metafile = JSON.parse(args.metafile as string);
+      } catch {
+        return formatErrorResponse(new Error("Invalid JSON in metafile"));
+      }
 
+      try {
         const analysis = await esbuild.analyzeMetafile(metafile, {
           verbose: args.verbose,
         });

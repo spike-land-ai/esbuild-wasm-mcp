@@ -24,6 +24,7 @@ let state: WasmState = {
 };
 
 let initialized = false;
+let initPromise: Promise<void> | null = null;
 
 export async function initializeWasm(
   opts: WasmInitOptions = {},
@@ -32,6 +33,7 @@ export async function initializeWasm(
   if (initialized) {
     // esbuild-wasm doesn't expose a "stop" for WASM mode, but we can re-initialize
     initialized = false;
+    initPromise = null;
     state = {
       status: "uninitialized",
       version: null,
@@ -41,33 +43,43 @@ export async function initializeWasm(
     };
   }
 
+  if (initPromise !== null && state.status === "initializing") {
+    await initPromise;
+    return { ...state };
+  }
+
   state.status = "initializing";
   state.options = { ...opts };
 
-  try {
-    const initOpts: esbuildWasm.InitializeOptions = {
-      worker: opts.worker ?? false,
-    };
+  const doInit = async (): Promise<void> => {
+    try {
+      const initOpts: esbuildWasm.InitializeOptions = {
+        worker: opts.worker ?? false,
+      };
 
-    if (opts.wasmURL) {
-      initOpts.wasmURL = opts.wasmURL;
-    } else if (opts.wasmModule) {
-      const wasmBytes = await readFile(opts.wasmModule);
-      initOpts.wasmModule = await WebAssembly.compile(wasmBytes);
+      if (opts.wasmURL) {
+        initOpts.wasmURL = opts.wasmURL;
+      } else if (opts.wasmModule) {
+        const wasmBytes = await readFile(opts.wasmModule);
+        initOpts.wasmModule = await WebAssembly.compile(wasmBytes);
+      }
+
+      await esbuildWasm.initialize(initOpts);
+
+      initialized = true;
+      state.status = "ready";
+      state.version = esbuildWasm.version;
+      state.error = null;
+      state.initializedAt = new Date().toISOString();
+    } catch (err) {
+      state.status = "error";
+      state.error = String(err);
+      throw err;
     }
+  };
 
-    await esbuildWasm.initialize(initOpts);
-
-    initialized = true;
-    state.status = "ready";
-    state.version = esbuildWasm.version;
-    state.error = null;
-    state.initializedAt = new Date().toISOString();
-  } catch (err) {
-    state.status = "error";
-    state.error = String(err);
-    throw err;
-  }
+  initPromise = doInit();
+  await initPromise;
 
   return { ...state };
 }
