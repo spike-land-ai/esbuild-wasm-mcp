@@ -1,5 +1,5 @@
 {
-  "extends": "@spike-land-ai/tsconfig/tsconfig.mcp.json",
+  "extends": "../.github/packages/tsconfig/tsconfig.mcp.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src"

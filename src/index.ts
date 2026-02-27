@@ -11,7 +11,7 @@ import { registerContextTool } from "./tools/context.js";
 
 const server = new McpServer({
   name: "esbuild-wasm-mcp",
-  version: "0.27.3",
+  version: "0.27.4",
 });
 
 registerInitializeTool(server);
