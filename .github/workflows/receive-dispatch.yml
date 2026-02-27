@@ -6,6 +6,8 @@ on:
 
 jobs:
   bump:
+    permissions:
+      contents: read
     uses: spike-land-ai/.github/.github/workflows/bump-dependency.yml@main
     with:
       package-name: ${{ github.event.client_payload.package }}
