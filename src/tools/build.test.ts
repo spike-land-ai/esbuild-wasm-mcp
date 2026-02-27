@@ -12,14 +12,16 @@ vi.mock("../wasm-api.js", () => ({
   getEsbuildWasm: vi.fn().mockResolvedValue(mockEsbuild),
 }));
 
+type ToolHandler = (args: Record<string, unknown>) => Promise<unknown>;
+
 class MockMcpServer {
-  tools = new Map<string, any>();
+  tools = new Map<string, ToolHandler>();
 
   tool(
     name: string,
-    description: string,
-    schema: Record<string, unknown>,
-    handler: (args: any) => Promise<any>,
+    _description: string,
+    _schema: Record<string, unknown>,
+    handler: ToolHandler,
   ) {
     this.tools.set(name, handler);
   }
@@ -97,8 +99,10 @@ describe("esbuild_wasm_mcp tools", () => {
       mangleCache: { a: "b" },
     });
 
-    const result = await handler!({ entryPoints: ["in.js"] });
-    const parsed = JSON.parse(result.content[0].text);
+    const result = await handler!({ entryPoints: ["in.js"] }) as {
+      content: { text: string }[];
+    };
+    const parsed = JSON.parse(result.content[0]!.text);
     expect(parsed.metafile).toBeDefined();
     expect(parsed.mangleCache).toBeDefined();
   });
@@ -109,7 +113,9 @@ describe("esbuild_wasm_mcp tools", () => {
     const handler = server.tools.get("esbuild_wasm_build");
 
     mockEsbuild.build.mockRejectedValue(new Error("Build failed"));
-    const result = await handler!({ entryPoints: ["in.js"] });
+    const result = await handler!({ entryPoints: ["in.js"] }) as {
+      isError: boolean;
+    };
     expect(result.isError).toBe(true);
   });
 });

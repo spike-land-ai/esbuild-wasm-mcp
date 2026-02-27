@@ -1,4 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { PartialMessage } from "@spike-land-ai/esbuild-wasm";
 import { z } from "zod";
 import { getEsbuildWasm } from "../wasm-api.js";
 import { formatErrorResponse } from "../errors.js";
@@ -49,7 +50,7 @@ export function registerFormatMessagesTool(server: McpServer): void {
 
       try {
         const formatted = await esbuild.formatMessages(
-          args.messages as Parameters<typeof esbuild.formatMessages>[0],
+          args.messages as PartialMessage[],
           { kind: args.kind, color: false },
         );
 

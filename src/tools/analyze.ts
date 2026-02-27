@@ -1,4 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { Metafile } from "@spike-land-ai/esbuild-wasm";
 import { z } from "zod";
 import { getEsbuildWasm } from "../wasm-api.js";
 import { formatErrorResponse } from "../errors.js";
@@ -23,9 +24,9 @@ export function registerAnalyzeTool(server: McpServer): void {
     async args => {
       const esbuild = await getEsbuildWasm();
 
-      let metafile;
+      let metafile: Metafile;
       try {
-        metafile = JSON.parse(args.metafile as string);
+        metafile = JSON.parse(args.metafile) as Metafile;
       } catch {
         return formatErrorResponse(new Error("Invalid JSON in metafile"));
       }
