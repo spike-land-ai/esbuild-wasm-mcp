@@ -224,19 +224,26 @@ export const TransformOnlySchema = {
   tsconfigRaw: z.string().optional().describe("Raw tsconfig JSON override"),
 };
 
+type WithRegExpMangle<T> = Omit<T, "mangleProps" | "reserveProps"> & {
+  mangleProps?: RegExp;
+  reserveProps?: RegExp;
+};
+
 /**
  * Convert mangleProps/reserveProps string patterns to RegExp
  * and return a clean options object ready for esbuild.
  */
-export function prepareBuildOptions(
-  args: Record<string, unknown>,
-): Record<string, unknown> {
-  const opts = { ...args };
-  if (typeof opts.mangleProps === "string") {
-    opts.mangleProps = new RegExp(opts.mangleProps);
-  }
-  if (typeof opts.reserveProps === "string") {
-    opts.reserveProps = new RegExp(opts.reserveProps);
-  }
-  return opts;
+export function prepareBuildOptions<T extends Record<string, unknown>>(
+  args: T,
+): WithRegExpMangle<T> {
+  const { mangleProps, reserveProps, ...rest } = args;
+  return {
+    ...rest,
+    ...(mangleProps !== undefined
+      ? { mangleProps: new RegExp(mangleProps as string) }
+      : {}),
+    ...(reserveProps !== undefined
+      ? { reserveProps: new RegExp(reserveProps as string) }
+      : {}),
+  } as WithRegExpMangle<T>;
 }

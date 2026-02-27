@@ -19,12 +19,10 @@ export function registerTransformTool(server: McpServer): void {
       const esbuild = await getEsbuildWasm();
 
       try {
-        const rawOpts = prepareBuildOptions(args);
-        const code = rawOpts.code as string;
-        const { code: _code, ...rest } = rawOpts;
+        const { code, ...rest } = prepareBuildOptions(args);
         const transformOpts: TransformOptions = {
           loader: "ts",
-          ...rest as TransformOptions,
+          ...(rest as TransformOptions),
         };
 
         const result = await esbuild.transform(code, transformOpts);

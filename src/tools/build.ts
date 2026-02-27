@@ -20,10 +20,11 @@ export function registerBuildTool(server: McpServer): void {
       const esbuild = await getEsbuildWasm();
 
       try {
-        const opts = prepareBuildOptions(args);
-        const options = { ...opts } as BuildOptions;
-        options.bundle = options.bundle ?? true;
-        options.write = options.write ?? false;
+        const options: BuildOptions = {
+          ...(prepareBuildOptions(args) as BuildOptions),
+          bundle: args.bundle ?? true,
+          write: args.write ?? false,
+        };
 
         const result = await esbuild.build(options);
 
