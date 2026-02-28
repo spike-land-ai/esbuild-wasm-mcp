@@ -38,17 +38,17 @@
     "access": "public"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.27.1",
-    "@spike-land-ai/esbuild-wasm": "0.27.4"
+    "@modelcontextprotocol/sdk": "1.27.1",
+    "@spike-land-ai/esbuild-wasm": "workspace:*"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.4",
-    "@spike-land-ai/eslint-config": "^2.0.1",
-    "@spike-land-ai/tsconfig": "^2.0.0",
-    "@types/node": "^25.3.2",
-    "eslint": "^9.27.0",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.32.1",
-    "vitest": "^4.0.18"
+    "@changesets/cli": "2.29.8",
+    "@spike-land-ai/eslint-config": "workspace:*",
+    "@spike-land-ai/tsconfig": "workspace:*",
+    "@types/node": "25.3.2",
+    "eslint": "9.27.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.32.1",
+    "vitest": "4.0.18"
   }
 }
