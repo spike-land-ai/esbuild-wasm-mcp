@@ -51,7 +51,7 @@ export async function initializeWasm(
   state.status = "initializing";
   state.options = { ...opts };
 
-  const doInit = async (): Promise<void> => {
+  initPromise = (async (): Promise<void> => {
     try {
       const initOpts: esbuildWasm.InitializeOptions = {
         worker: opts.worker ?? false,
@@ -74,11 +74,11 @@ export async function initializeWasm(
     } catch (err) {
       state.status = "error";
       state.error = String(err);
+      initPromise = null; // Allow retry on error
       throw err;
     }
-  };
+  })();
 
-  initPromise = doInit();
   await initPromise;
 
   return { ...state };
